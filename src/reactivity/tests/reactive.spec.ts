@@ -1,13 +1,34 @@
-import reactive from '../reactive';
-it('reactive', () => {
-	const obj = { sum: 10 };
-	let proxyObj = reactive(obj);
+import { reactive, readonly } from '../reactive';
 
-	// 代理对象 不等于原始对象
-	expect(proxyObj).not.toBe(obj);
+describe('reactive', () => {
+	it('reactive', () => {
+		const obj = { sum: 10 };
+		let proxyObj = reactive(obj);
 
-	expect(proxyObj.sum).toBe(10);
+		// 代理对象 不等于原始对象
+		expect(proxyObj).not.toBe(obj);
 
-	proxyObj.sum++;
-	expect(proxyObj.sum).toBe(11);
+		expect(proxyObj.sum).toBe(10);
+
+		proxyObj.sum++;
+		expect(proxyObj.sum).toBe(11);
+	});
+
+	it('readonly', () => {
+		let obj = { name: 'cone', age: { base: 18 } };
+		let readonlyObj = readonly(obj);
+		// 原始对象不等于代理对象
+		expect(obj).not.toBe(readonlyObj);
+
+		readonlyObj.name = 'cc';
+		expect(obj.name).toBe('cone');
+	});
+
+	it('readonly can not be set', () => {
+		let obj = { name: 'cone', age: { base: 18 } };
+		let readonlyObj = readonly(obj);
+		console.warn = jest.fn();
+		readonlyObj.name = 'cc';
+		expect(console.warn).toBeCalled();
+	});
 });

@@ -10,11 +10,8 @@
 	"scripts": {
 		"test": "jest"
 	},
-	"jest.autoRun": {
-		"watch": true,
-		"onStartup": [
-			"all-tests"
-		]
+	"jest": {
+		"testEnvironment": "node"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.18.9",
