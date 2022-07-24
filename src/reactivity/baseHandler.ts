@@ -1,5 +1,10 @@
 import { track, trigger } from './effect';
 
+export const enum ReactiveFlag {
+	IS_READONLY = '__v_isReadonly',
+	IS_REACTIVE = '__v_isReactive',
+}
+
 // 初始化调用一次即可
 const get = createGetter();
 const set = createSetter();
@@ -8,8 +13,14 @@ const readonlyGet = createGetter(true);
 export function createGetter(isReadonly = false) {
 	return function get(target, key) {
 		const ret = Reflect.get(target, key);
-		// 收集依赖
+
+		if (key === ReactiveFlag.IS_REACTIVE) {
+			return !isReadonly;
+		} else if (key === ReactiveFlag.IS_READONLY) {
+			return isReadonly;
+		}
 		if (!isReadonly) {
+			// 收集依赖
 			track(target, key);
 		}
 		return ret;

@@ -1,4 +1,4 @@
-import { reactive, readonly } from '../reactive';
+import { isReactive, reactive } from '../reactive';
 
 describe('reactive', () => {
 	it('reactive', () => {
@@ -12,23 +12,8 @@ describe('reactive', () => {
 
 		proxyObj.sum++;
 		expect(proxyObj.sum).toBe(11);
-	});
 
-	it('readonly', () => {
-		let obj = { name: 'cone', age: { base: 18 } };
-		let readonlyObj = readonly(obj);
-		// 原始对象不等于代理对象
-		expect(obj).not.toBe(readonlyObj);
-
-		readonlyObj.name = 'cc';
-		expect(obj.name).toBe('cone');
-	});
-
-	it('readonly can not be set', () => {
-		let obj = { name: 'cone', age: { base: 18 } };
-		let readonlyObj = readonly(obj);
-		console.warn = jest.fn();
-		readonlyObj.name = 'cc';
-		expect(console.warn).toBeCalled();
+		expect(isReactive(proxyObj)).toBe(true);
+		expect(isReactive(obj)).toBe(false);
 	});
 });
