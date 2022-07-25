@@ -1,4 +1,4 @@
-import { readonly, isReadonly, reactive } from '../reactive';
+import { readonly, isReadonly, reactive, isProxy } from '../reactive';
 
 describe('readonly', () => {
 	it('readonly', () => {
@@ -15,6 +15,7 @@ describe('readonly', () => {
 
 		const foo = reactive({ name: 'foo' });
 		expect(isReadonly(foo)).toBe(false);
+		expect(isProxy(readonlyObj)).toBe(true);
 	});
 
 	it('readonly can not be set', () => {
@@ -23,5 +24,19 @@ describe('readonly', () => {
 		console.warn = jest.fn();
 		readonlyObj.name = 'cc';
 		expect(console.warn).toBeCalled();
+	});
+
+	it('readonly nest should be readonly', () => {
+		const obj = {
+			name: 'cone',
+			nest: {
+				age: [{ foo: 18 }],
+			},
+		};
+		const proxyObj = readonly(obj);
+
+		expect(isReadonly(proxyObj.nest)).toBe(true);
+		expect(isReadonly(proxyObj.nest.age)).toBe(true);
+		expect(isReadonly(proxyObj.nest.age[0])).toBe(true);
 	});
 });

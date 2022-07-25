@@ -69,8 +69,10 @@ describe('effect', () => {
 		obj.sum = 11;
 		expect(dummy).toBe(11);
 		stop(runner);
-		obj.sum = 12;
-		// obj.sum++;
+		// obj.sum = 12;
+
+		// 等价于 obj.sum = obj.sum + 1;
+		obj.sum++;
 		expect(dummy).toBe(11);
 
 		runner();

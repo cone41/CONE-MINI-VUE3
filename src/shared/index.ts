@@ -1,1 +1,6 @@
 export const extend = Object.assign;
+
+export const isObject = (obj) => {
+	// Object.prototype.toString.call(obj).slice(8, -1) === 'Object';
+	return obj !== null && typeof obj === 'object';
+};

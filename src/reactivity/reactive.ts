@@ -1,12 +1,20 @@
-import { mutableHandlers, ReactiveFlag, readonlyHandlers } from './baseHandler';
+import { mutableHandlers, ReactiveFlag, readonlyHandlers, shallowReadonlyHandlers } from './baseHandler';
 
 export function reactive(raw) {
+	return createReactiveObject(raw, mutableHandlers);
+}
+
+export function shallowReactive(raw) {
 	return createReactiveObject(raw, mutableHandlers);
 }
 
 // 无需收集依赖
 export function readonly(raw) {
 	return createReactiveObject(raw, readonlyHandlers);
+}
+
+export function shallowReadonly(raw) {
+	return createReactiveObject(raw, shallowReadonlyHandlers);
 }
 
 // 通过触发 get 传递特殊 key 值来判断
@@ -17,6 +25,10 @@ export function isReadonly(raw) {
 // 通过触发 get 传递特殊 key 值来判断
 export function isReactive(raw) {
 	return !!raw[ReactiveFlag.IS_REACTIVE];
+}
+
+export function isProxy(value) {
+	return isReactive(value) || isReadonly(value);
 }
 
 function createReactiveObject(raw, baseHandler) {

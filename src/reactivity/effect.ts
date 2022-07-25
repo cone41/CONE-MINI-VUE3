@@ -1,4 +1,7 @@
 import { extend } from '../shared/index';
+
+let activeEffect;
+let shouldTrack;
 class ReactiveEffect {
 	private _fn: any;
 	active: boolean = true;
@@ -13,16 +16,29 @@ class ReactiveEffect {
 	}
 	//
 	run() {
-		activeEffect = this; //当前的 effect实例
-		return this._fn();
+		// 调用 stop 之后不走依赖收集的逻辑
+		if (!this.active) {
+			return this._fn();
+		}
+
+		// 逻辑走到这里表示应该要收集依赖
+		shouldTrack = true;
+		//当前的 effect实例
+		activeEffect = this;
+
+		const ret = this._fn();
+		//reset flag
+		shouldTrack = false;
+
+		return ret;
 	}
 	stop() {
 		// 多次调用 stop，只执行一次
 		if (this.active) {
+			cleanUpEffect(this);
 			if (this.onStop) {
 				this.onStop();
 			}
-			cleanUpEffect(this);
 			this.active = false;
 		}
 	}
@@ -32,11 +48,13 @@ function cleanUpEffect(effect) {
 	effect.deps.forEach((dep: any) => {
 		dep.delete(effect);
 	});
+	effect.deps.length = 0;
 }
 
 // 收集依赖
 let targetMap = new Map();
 export function track(target, key) {
+	if (!isTracking()) return;
 	// 外层的响应式对象
 	let depsMap = targetMap.get(target);
 	if (!depsMap) {
@@ -49,15 +67,22 @@ export function track(target, key) {
 		dep = new Set();
 		depsMap.set(key, dep);
 	}
-	// 如果响应式数据的属性没有被 effect用到，则 activeEffect 为 undefined
-	if (!activeEffect) return;
+
+	if (dep.has(activeEffect)) return;
 	dep.add(activeEffect);
 	activeEffect.deps.push(dep);
+}
+
+// 是否需要收集依赖
+// 如果响应式数据的属性没有被 effect用到，则 activeEffect 为 undefined
+function isTracking() {
+	return shouldTrack && activeEffect !== undefined;
 }
 
 // 触发依赖
 export function trigger(target, key) {
 	let depsMap = targetMap.get(target);
+	if (!depsMap) return;
 	let deps = depsMap.get(key);
 	for (const effect of deps) {
 		if (effect.scheduler) {
@@ -68,7 +93,6 @@ export function trigger(target, key) {
 	}
 }
 
-let activeEffect;
 export function effect(fn, options: any = {}) {
 	const _effect = new ReactiveEffect(fn, options.scheduler);
 	extend(_effect, options);
