@@ -1,5 +1,5 @@
 # CONE-MINI-VUE3
-MINI VUE
+MINI VUE3
 
 
 ## Futures list that have been implemented
