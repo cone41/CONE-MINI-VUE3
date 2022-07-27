@@ -42,7 +42,7 @@ export function createGetter(isReadonly = false, isShallow = false) {
 }
 
 export function createSetter() {
-	return function get(target, key, value) {
+	return function set(target, key, value) {
 		const ret = Reflect.set(target, key, value);
 		// 触发依赖
 		trigger(target, key);

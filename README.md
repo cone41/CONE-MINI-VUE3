@@ -10,4 +10,7 @@ MINI VUE3
 - [x] isReadonly
 - [x] isProxy
 - [x] effect 
+- [x] ref
+- [x] isRef
+- [x] unRef  
 

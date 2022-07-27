@@ -67,7 +67,10 @@ export function track(target, key) {
 		dep = new Set();
 		depsMap.set(key, dep);
 	}
+	trackEffects(dep);
+}
 
+export function trackEffects(dep) {
 	if (dep.has(activeEffect)) return;
 	dep.add(activeEffect);
 	activeEffect.deps.push(dep);
@@ -75,7 +78,7 @@ export function track(target, key) {
 
 // 是否需要收集依赖
 // 如果响应式数据的属性没有被 effect用到，则 activeEffect 为 undefined
-function isTracking() {
+export function isTracking() {
 	return shouldTrack && activeEffect !== undefined;
 }
 
@@ -83,8 +86,12 @@ function isTracking() {
 export function trigger(target, key) {
 	let depsMap = targetMap.get(target);
 	if (!depsMap) return;
-	let deps = depsMap.get(key);
-	for (const effect of deps) {
+	let dep = depsMap.get(key);
+	triggerEffects(dep);
+}
+
+export function triggerEffects(dep) {
+	for (const effect of dep) {
 		if (effect.scheduler) {
 			effect.scheduler();
 		} else {
