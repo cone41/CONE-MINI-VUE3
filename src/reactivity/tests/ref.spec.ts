@@ -1,4 +1,4 @@
-import { isRef, ref, unRef } from '../ref';
+import { isRef, proxyRefs, ref, unRef } from '../ref';
 import { effect } from '../effect';
 
 describe('ref', () => {
@@ -56,5 +56,25 @@ describe('ref', () => {
 		const a = ref(1);
 		expect(unRef(a)).toBe(1);
 		expect(unRef(1)).toBe(1);
+	});
+
+	it('proxyRefs', () => {
+		const obj = {
+			foo: ref(1),
+			bar: 2,
+		};
+		const proxyRefsObj = proxyRefs(obj);
+		expect(obj.foo.value).toBe(1);
+		expect(proxyRefsObj.foo).toBe(1);
+		expect(proxyRefsObj.bar).toBe(2);
+
+		// set
+		proxyRefsObj.foo = 2;
+		expect(obj.foo.value).toBe(2);
+		expect(proxyRefsObj.foo).toBe(2);
+
+		proxyRefsObj.foo = ref(10);
+		expect(obj.foo.value).toBe(10);
+		expect(proxyRefsObj.foo).toBe(10);
 	});
 });

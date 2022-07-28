@@ -2,7 +2,7 @@ import { extend } from '../shared/index';
 
 let activeEffect;
 let shouldTrack;
-class ReactiveEffect {
+export class ReactiveEffect {
 	private _fn: any;
 	active: boolean = true;
 	// 将 scheduler 声明为public，外部可使用
@@ -10,7 +10,7 @@ class ReactiveEffect {
 	public onStop?: () => void;
 	deps = [];
 
-	constructor(fn, scheduler) {
+	constructor(fn, scheduler?) {
 		this._fn = fn;
 		this.scheduler = scheduler;
 	}

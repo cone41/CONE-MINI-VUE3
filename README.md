@@ -6,6 +6,8 @@ MINI VUE3
 
 - [x] reactive  
 - [x] readonly
+- [x] shallowReactive  
+- [x] shallowReadonly
 - [x] isReactive
 - [x] isReadonly
 - [x] isProxy
@@ -13,4 +15,8 @@ MINI VUE3
 - [x] ref
 - [x] isRef
 - [x] unRef  
+- [x] proxyRefs
+- [x] computed  
+
+
 
