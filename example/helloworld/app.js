@@ -1,4 +1,5 @@
 import { h } from '../../lib/cone-mini-vue.esm.js'
+import Foo from './Foo.js'
 window.self = null
 export const App = {
     render() {
@@ -12,7 +13,7 @@ export const App = {
             onMousedown: () => {
                 console.log('onMousedown')
             }
-        }, `hi,我是${this.name}`)
+        }, [h('div', { class: 'div-c' }, `my name is ${this.name}`), h(Foo, { name: 'foo' })])
     },
     setup() {
         return {
