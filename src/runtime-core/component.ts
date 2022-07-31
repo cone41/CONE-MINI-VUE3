@@ -4,12 +4,14 @@ import { initProps } from './componentProps';
 import { componentPublicProxyHandlers } from './componentPublicHandler';
 import { initSlots } from './componentSlots';
 
-export function createComponentInstance(vnode) {
+export function createComponentInstance(vnode, parent) {
 	const instance = {
 		vnode,
 		type: vnode.type,
 		setupState: {},
 		el: null,
+		provides: parent ? parent.provides : {},
+		parent,
 		emit: () => {},
 	};
 
@@ -36,10 +38,13 @@ function setupStatefulComponent(instance: any) {
 	const { props } = instance;
 	// 如果有 setup 则调用 setup 拿到返回结果
 	if (setup) {
+		setCurrentInstance(instance);
 		// props 是个浅层只读
 		const setupResult = setup(shallowReadonly(props), {
 			emit: instance.emit,
 		});
+		console.log('instance', instance);
+		setCurrentInstance(null);
 		handleSetupResult(instance, setupResult);
 	}
 }
@@ -59,4 +64,13 @@ function finishComponentSetup(instance: any) {
 	if (component.render) {
 		instance.render = component.render;
 	}
+}
+
+let currentInstance = null;
+export function getCurrentInstance() {
+	return currentInstance;
+}
+
+export function setCurrentInstance(instance) {
+	currentInstance = instance;
 }
