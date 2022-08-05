@@ -3,6 +3,7 @@ import { h, ref } from '../../lib/cone-mini-vue.esm.js'
 import ArrayToText from './ArrayToText.js'
 import TextToArray from './TextToArray.js'
 import TextToText from './TextToText.js'
+import ArrayToArray from './ArrayToArray.js'
 
 export default {
     name: 'App',
@@ -51,8 +52,9 @@ export default {
         return h('div', { ...this.baz }, [
             button1, button2, button3, button,
             // h(ArrayToText)
-            h(TextToArray)
+            // h(TextToArray)
             // h(TextToText)
+            h(ArrayToArray)
         ])
     }
 }
