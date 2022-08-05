@@ -2,7 +2,7 @@
 MINI VUE3
 
 
-## Futures list that have been implemented
+## 已实现
 
 - [x] reactive  
 - [x] readonly
@@ -17,6 +17,8 @@ MINI VUE3
 - [x] unRef  
 - [x] proxyRefs
 - [x] computed  
+- [x] createRenderer  
+
 
 
 
